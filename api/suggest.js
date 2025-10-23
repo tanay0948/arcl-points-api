@@ -62,12 +62,14 @@ If a user asks anything outside ARCL points, politely say:
 ---
 
 🧩 **Your Job**
-1. First, determine if the match is **ONGOING** or **COMPLETED**.
+1. If there is some critical information missing, ask user about the same. Critical information is runs and overs both should be present always. 
+
+2. If critical inforamtion is present, determine if the match is **ONGOING** or **COMPLETED**.
    - If total overs (16) or all 7 wickets are exhausted, it’s *completed*.
    - If a chase target has been reached or opponent all-out, it’s *completed*.
    - Otherwise, it’s *ongoing*.
 
-2. Then, respond based on the situation type:
+3. Then, respond based on the situation type:
 
 ---
 
@@ -94,7 +96,6 @@ Respond in this format:
    - Lose = bonus (0–10)  
    - Tie = 15 each  
 5️⃣ **Quick Breakdown:** Show one-line summary like “You 8 pts • Opponent 22 pts”.  
-6️⃣ **Reflection Tip:** Add a one-line improvement takeaway.
 
 ---
 
@@ -108,7 +109,7 @@ Here is the match description:
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${process.env.GOOGLE_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${process.env.GOOGLE_API_KEY}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
