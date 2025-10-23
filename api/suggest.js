@@ -8,12 +8,11 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const { match } = req.body || {};
-  if (!match) {
-    return res.status(400).json({ error: "Missing match data" });
+  const { situation } = req.body || {};
+  if (!situation) {
+    return res.status(400).json({ error: "Missing match situation text" });
   }
 
-  
   const prompt = `
 You are the **ARCL Points Strategy Assistant**.
 You ONLY discuss topics related to the *ARCL 30-point cricket system*. 
@@ -62,7 +61,7 @@ Always reply in this exact structure:
 4️⃣ **Maximize Points Advice:**  
    - 🏆 If winning: Suggest concrete ways to increase bonus margin.  
    - ⚔️ If losing: Suggest how to secure more bonus points (batting/wickets).  
-   - Keep tips practical and concise (4–5 sentences).
+   - Keep tips practical and concise (2–4 sentences).
 
 **Reminder:** Stay focused only on ARCL points and cricket scenarios. No other topics.
 
@@ -75,26 +74,21 @@ Now analyze this ARCL match situation and respond strictly in the above format:
 
   try {
     const response = await fetch(
-  `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${process.env.GOOGLE_API_KEY}`,
-  {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }]
-    })
-  }
-);
-    
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${process.env.GOOGLE_API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }]
+        })
+      }
+    );
 
     const data = await response.json();
-
-    // Debugging log (visible in Vercel logs)
     console.log("Gemini response:", JSON.stringify(data));
 
-    // Safely extract the model’s reply
     const text =
       data.candidates?.[0]?.content?.parts?.[0]?.text ||
-      data.promptFeedback?.safetyRatings?.[0]?.category ||
       "No suggestions generated.";
 
     return res.status(200).json({ suggestions: text });
